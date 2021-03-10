@@ -197,13 +197,17 @@ public final class Utils {
     }
 
     public static void setTokensFor(
-            ContainerLaunchContext amContainer, List<Path> paths, Configuration conf)
-            throws IOException {
+            ContainerLaunchContext amContainer, List<Path> paths, Configuration conf,
+            boolean yarnFetchDelegationEnabled) throws IOException {
         Credentials credentials = new Credentials();
-        // for HDFS
-        TokenCache.obtainTokensForNamenodes(credentials, paths.toArray(new Path[0]), conf);
-        // for HBase
-        obtainTokenForHBase(credentials, conf);
+
+        if (yarnFetchDelegationEnabled) {
+            // for HDFS
+            TokenCache.obtainTokensForNamenodes(credentials, paths.toArray(new Path[0]), conf);
+            // for HBase
+            obtainTokenForHBase(credentials, conf);
+        }
+
         // for user
         UserGroupInformation currUsr = UserGroupInformation.getCurrentUser();
 

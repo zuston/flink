@@ -1081,13 +1081,22 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         if (UserGroupInformation.isSecurityEnabled()) {
             // set HDFS delegation tokens when security is enabled
             LOG.info("Adding delegation token to the AM container.");
-            List<Path> yarnAccessList =
-                    ConfigUtils.decodeListFromConfig(
-                            configuration, YarnConfigOptions.YARN_ACCESS, Path::new);
+            List<Path> yarnAccessList = new ArrayList<>();
+
+            Boolean yarnFetchDelegationTokenEnabled =
+                    configuration.getBoolean(YarnConfigOptions.YARN_SECURITY_ENABLED);
+
+            if (yarnFetchDelegationTokenEnabled) {
+                yarnAccessList =
+                        ConfigUtils.decodeListFromConfig(
+                                configuration, YarnConfigOptions.YARN_ACCESS, Path::new);
+            }
+
             Utils.setTokensFor(
                     amContainer,
                     ListUtils.union(yarnAccessList, fileUploader.getRemotePaths()),
-                    yarnConfiguration);
+                    yarnConfiguration,
+                    yarnFetchDelegationTokenEnabled);
         }
 
         amContainer.setLocalResources(fileUploader.getRegisteredLocalResources());
