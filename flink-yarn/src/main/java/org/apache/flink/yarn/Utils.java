@@ -564,8 +564,8 @@ public final class Utils {
                 Collection<Token<? extends TokenIdentifier>> userTokens = cred.getAllTokens();
                 for (Token<? extends TokenIdentifier> token : userTokens) {
                     if (!token.getKind().equals(AMRMTokenIdentifier.KIND_NAME)) {
-                        final Text id = new Text(token.getIdentifier());
-                        taskManagerCred.addToken(id, token);
+                        final Text alias = new Text(token.getService());
+                        taskManagerCred.addToken(alias, token);
                     }
                 }
 
