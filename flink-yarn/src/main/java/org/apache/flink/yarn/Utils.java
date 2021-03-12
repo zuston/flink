@@ -213,9 +213,9 @@ public final class Utils {
 
         Collection<Token<? extends TokenIdentifier>> usrTok = currUsr.getTokens();
         for (Token<? extends TokenIdentifier> token : usrTok) {
-            final Text id = new Text(token.getIdentifier());
-            LOG.info("Adding user token " + id + " with " + token);
-            credentials.addToken(id, token);
+            final Text alias = new Text(token.getService());
+            LOG.info("Adding user token " + alias + " with " + token);
+            credentials.addToken(alias, token);
         }
         try (DataOutputBuffer dob = new DataOutputBuffer()) {
             credentials.writeTokenStorageToStream(dob);
